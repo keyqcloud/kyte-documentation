@@ -7,9 +7,145 @@
     <meta property="og:title" content="Kyte Documentation">
     <meta property="og:description" content="Learn how to create robust web apps with Kyte.">
     <title>Kyte Documentation</title>
+    <style>
+        pre {
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            overflow: auto;
+            overflow-y: hidden;
+            font-size: 12px;
+            line-height: 20px;
+            background: #efefef;
+            border: 1px solid #777;
+            background: url(lines.png) repeat 0 0;
+        }
+        pre code {
+            padding: 10px;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
     <h1>Kyte</h1>
     <small>version 3.x</small>
+
+    <h2>Introduction</h2>
+
+    <h3>Directory Structure</h3>
+    <p>The directory structure of Kyte projects are simple. Configurations are found at the root (<code>/</code>) directory, while all other components (controllers and models) live in the <code>/app</code> directory.  Controllers are stored in <code>/app/controllers</code>, while models are stored in <code>/app/models</code>.</p>
+    
+    <h3>Creating a model</h3>
+    <p>By default, Kyte functions as an API out of the box, but isn't really useful until you customize it. The first step to customizing your API for your project is by definings the necessary models. Defining new models alone is sufficient for Kyte to function as it already has a default controller it uses to respond to and serve data, however this behaviour can also be modified using custom controllers (described later in this documentation).</p>
+    <p>Models are simply a PHP array definition that is stored as source files in <code>/app/models</code> of your project. Separate files for each model definition must be created (you cannot have a file with multiple model definitions).</p>
+    <p>Here's an example model that one might use to store device token information used for push notifications <code>/app/models/Device.php</code>.</p>
+<pre><code>
+// /app/models/Device.php
+$Device = [
+    'name' => 'Device',
+    'struct' => [
+        'token'		=> [
+            'type'	=> 's',
+            'required'	=> true,
+            'date'	=> false,
+            'size'	=> 512,
+        ],
+        'user'		=> [
+            'type'		=> 'i',
+            'required'	=> false,
+            'date'	=> false,
+            'size'	=> 11,
+            'unsigned'	=> true,
+            'fk'        => [
+                'model' => 'User',
+                'field' => 'id',
+            ],
+        ],
+    ],
+];
+</code></pre>
+    <p>In the example above, we see that we have a model named <code>Device</code> with two properties - <code>token</code> and <code>user</code>. The property <code>user</code> is defined as a string that cannot be made null (<code>'requred' => true</code>) and is 512 bytes long. You also see that the property is explicitly marked as not being a date (<code>'date' => false</code>). The date attribute is required for all property definitions in Kyte, and must be explicitly defined even for properties that are not dates.</p>
+    <p>The next property that is defined in this example model is called <code>user</code>. This property is an unsigned integer of size 11, but this time the property can be set to null (<code>'required' => false</code>). You see the date attribute again explicitly defining the attribute as not being a date. Finally, the <code>fk</code> attribute indicates that this is a foreign key to a different model (table). Specifically, in this example, the <code>user</code> property is a foreign key to the <code>id</code> property of the <code>User</code> model.</p>
+    <p>Model definitions will always take the format shown below, where the Array variable name is the name of the model, containing <code>name</code> and <code>struct</code> elements.</p>
+<pre><code>
+$ModelName = [
+    'name' => 'ModelName',
+    'struct' => [
+        /* property definition */
+    ],
+];
+</code></pre>
+    <p>The <code>struct</code> element holds the property definitions, like the ones we saw earlier in the <code>Device</code> model example. Let's next take a look at the different property types that can be defined in Kyte.</p>
+
+    <h4>Integers</h4>
+<pre><code>
+'{propertyName}'	=> [
+    'type'	=> 'i',
+    'date'	=> false,
+    'required'	=> {true/false},
+    'size'	=> {size},
+    'unsigned'	=> {true/false},
+],
+</code></pre>
+
+    <h4>Strings</h4>
+<pre><code>
+'{propertyName}'	=> [
+    'type'	=> 's',
+    'date'	=> false,
+    'required'	=> {true/false},
+    'size'	=> {size},
+]
+</code></pre>
+
+    <h4>Decimals</h4>
+<pre><code>
+'{propertyName}'	=> [
+    'type'  => 'd',
+    'date'  => false,
+    'required'  => {true/false},
+    'precision' => {precision},
+    'scale' => {scale},
+]
+</code></pre>
+<p>For decimals, specify <code>'d'</code> for <code>type</code> and indicate the required precision and scale that you need. Precision is the total number of digits, while scale is the number of digits right of the decimal point. For example, the decimal number 12345.67 has a precision of 7 digits, and a scale of 2 digits.</p>
+
+    <h4>Text</h4>
+<pre><code>
+'{propertyName}'	=> [
+    'type'	=> 't',
+    'date'	=> false,
+    'required'	=> {true/false},
+]
+</code></pre>
+    
+    <h4>Dates</h4>
+<pre><code>
+'{propertyName}'	=> [
+    'type'	=> 'i',
+    'date'	=> true,
+    'required'	=> {true/false},
+]
+</code></pre>
+<p>Dates use <code>'i'</code> for <code>type</code> as the date is stored as UNIX time in secods as a long integer.</p>
+
+    <h4>Foreign Keys</h4>
+<pre><code>
+'{propertyName}'	=> [
+    'type'	=> 'i',
+    'date'	=> false,
+    'size'	=> 11,
+    'unsigned'	=> true,
+    'required'	=> {true/false},
+    'fk'        => [
+        'model' => '{modelName}',
+        'field' => '{propertyName}',
+    ],
+]
+</code></pre>
+
+    <hr />
+    
+    <small>&copy; KeyQ, Inc.</small>
 </body>
 </html>
