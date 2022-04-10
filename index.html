@@ -11,8 +11,8 @@
     <style>
         pre {
             width: 100%;
-            padding: 0;
-            margin: 0;
+            padding: 10px 15px;
+            /* margin: 0; */
             overflow: auto;
             overflow-y: hidden;
             font-size: 12px;
@@ -22,25 +22,24 @@
             background: url(lines.png) repeat 0 0;
         }
         pre code {
-            padding: 10px;
             color: #333;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>Kyte</h1>
-    <small>version 3.x</small>
+    <div class="container">
+        <h1>Kyte</h1>
+        <small>version 3.x</small>
 
-    <!-- 1. Introduction -->
-    <h2>1. Introduction</h2>
+        <!-- 1. Introduction -->
+        <h2>1. Introduction</h2>
 
-    <!-- 1.1 Directory Structure -->
-    <h3>1.1 Directory Structure</h3>
-    <p>The directory structure of Kyte projects are simple. Configurations are found at the root (<code>/</code>) directory, while all other components (controllers and models) live in the <code>/app</code> directory.  Controllers are stored in <code>/app/controllers</code>, while models are stored in <code>/app/models</code>. To setup a workspace, simply create a folder for your project, and create the following folders inside: <code>/app/models</code> and <code>/app/controllers</code>. Next, create an <code>index.php</code> file at the root of your project folder and copy the following code:</p>
-    
-<pre><code>
-&lt;?php
+        <!-- 1.1 Directory Structure -->
+        <h3>1.1 Directory Structure</h3>
+        <p>The directory structure of Kyte projects are simple. Configurations are found at the root (<code>/</code>) directory, while all other components (controllers and models) live in the <code>/app</code> directory.  Controllers are stored in <code>/app/controllers</code>, while models are stored in <code>/app/models</code>. To setup a workspace, simply create a folder for your project, and create the following folders inside: <code>/app/models</code> and <code>/app/controllers</code>. Next, create an <code>index.php</code> file at the root of your project folder and copy the following code:</p>
+        
+<pre><code>&lt;?php
 
 require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/config.php';
@@ -51,33 +50,29 @@ $app->route();
 ?&gt; 
 </code></pre>
 
-    <p>Lastly, for all the magic to work, add the following <code>.htaccess</code> file also to the root of your project folder.</p>
+        <p>Lastly, for all the magic to work, add the following <code>.htaccess</code> file also to the root of your project folder.</p>
 
-<pre><code>
-FallbackResource /index.php
+<pre><code>FallbackResource /index.php</code></pre>
+
+        <p>The final directory structure should look like so:</p>
+
+<pre><code>/ 
++ index.html
++ .htaccess
++ .gitignore
++ /app/
+        + /models/
+        + /controllers/
 </code></pre>
 
-    <p>The final directory structure should look like so:</p>
+        <p>A <code>.gitignore</code> is highly recommended if you are using git for versioning. In the .gitignore, include <code>config.php</code> so that this is not tracked if accidentally committed and pushed.</p>
 
-<pre><code>
-/ 
-  + index.html
-  + .htaccess
-  + .gitignore
-  + /app/
-          + /models/
-          + /controllers/
-</code></pre>
-
-    <p>A <code>.gitignore</code> is highly recommended if you are using git for versioning. In the .gitignore, include <code>config.php</code> so that this is not tracked if accidentally committed and pushed.</p>
-
-    <!-- 1.2 Creating a model -->
-    <h3>1.2 Creating a model</h3>
-    <p>By default, Kyte functions as an API out of the box, but isn't really useful until you customize it. The first step to customizing your API for your project is by definings the necessary models. Defining new models alone is sufficient for Kyte to function as it already has a default controller it uses to respond to and serve data, however this behaviour can also be modified using custom controllers (described later in this documentation).</p>
-    <p>Models are simply a PHP array definition that is stored as source files in <code>/app/models</code> of your project. Separate files for each model definition must be created (you cannot have a file with multiple model definitions).</p>
-    <p>Here's an example model that one might use to store device token information used for push notifications <code>/app/models/Device.php</code>.</p>
-<pre><code>
-// /app/models/Device.php
+        <!-- 1.2 Creating a model -->
+        <h3>1.2 Creating a model</h3>
+        <p>By default, Kyte functions as an API out of the box, but isn't really useful until you customize it. The first step to customizing your API for your project is by definings the necessary models. Defining new models alone is sufficient for Kyte to function as it already has a default controller it uses to respond to and serve data, however this behaviour can also be modified using custom controllers (described later in this documentation).</p>
+        <p>Models are simply a PHP array definition that is stored as source files in <code>/app/models</code> of your project. Separate files for each model definition must be created (you cannot have a file with multiple model definitions).</p>
+        <p>Here's an example model that one might use to store device token information used for push notifications <code>/app/models/Device.php</code>.</p>
+<pre><code>// /app/models/Device.php
 $Device = [
     'name' => 'Device',
     'struct' => [
@@ -101,22 +96,20 @@ $Device = [
     ],
 ];
 </code></pre>
-    <p>In the example above, we see that we have a model named <code>Device</code> with two properties: <code>token</code> and <code>user</code>. The property <code>user</code> is defined as a string that cannot be made null (<code>'requred' => true</code>) and is 512 bytes long. You also see that the property is explicitly marked as not being a date (<code>'date' => false</code>). The date attribute is required for all property definitions in Kyte, and must be explicitly defined even for properties that are not dates.</p>
-    <p>The next property that is defined in this example model is called <code>user</code>. This property is an unsigned integer of size 11, but this time the property can be set to null (<code>'required' => false</code>). You see the date attribute again explicitly defining the attribute as not being a date. Finally, the <code>fk</code> attribute indicates that this is a foreign key to a different model (table). Specifically, in this example, the <code>user</code> property is a foreign key to the <code>id</code> property of the <code>User</code> model.</p>
-    <p>Model definitions will always take the format shown below, where the Array variable name is the name of the model, containing <code>name</code> and <code>struct</code> elements.</p>
-<pre><code>
-$ModelName = [
+        <p>In the example above, we see that we have a model named <code>Device</code> with two properties: <code>token</code> and <code>user</code>. The property <code>user</code> is defined as a string that cannot be made null (<code>'requred' => true</code>) and is 512 bytes long. You also see that the property is explicitly marked as not being a date (<code>'date' => false</code>). The date attribute is required for all property definitions in Kyte, and must be explicitly defined even for properties that are not dates.</p>
+        <p>The next property that is defined in this example model is called <code>user</code>. This property is an unsigned integer of size 11, but this time the property can be set to null (<code>'required' => false</code>). You see the date attribute again explicitly defining the attribute as not being a date. Finally, the <code>fk</code> attribute indicates that this is a foreign key to a different model (table). Specifically, in this example, the <code>user</code> property is a foreign key to the <code>id</code> property of the <code>User</code> model.</p>
+        <p>Model definitions will always take the format shown below, where the Array variable name is the name of the model, containing <code>name</code> and <code>struct</code> elements.</p>
+<pre><code>$ModelName = [
     'name' => 'ModelName',
     'struct' => [
         /* property definition */
     ],
 ];
 </code></pre>
-    <p>The <code>struct</code> element holds the property definitions, like the ones we saw earlier in the <code>Device</code> model example. Let's next take a look at the different property types that can be defined in Kyte.</p>
+        <p>The <code>struct</code> element holds the property definitions, like the ones we saw earlier in the <code>Device</code> model example. Let's next take a look at the different property types that can be defined in Kyte.</p>
 
-    <h4>1.2.1 Integers</h4>
-<pre><code>
-'{propertyName}'	=> [
+        <h4>1.2.1 Integers</h4>
+<pre><code>'{propertyName}'	=> [
     'type'	=> 'i',
     'date'	=> false,
     'required'	=> {true/false},
@@ -125,9 +118,8 @@ $ModelName = [
 ],
 </code></pre>
 
-    <h4>1.2.2 Strings</h4>
-<pre><code>
-'{propertyName}'	=> [
+        <h4>1.2.2 Strings</h4>
+<pre><code>'{propertyName}'	=> [
     'type'	=> 's',
     'date'	=> false,
     'required'	=> {true/false},
@@ -135,9 +127,8 @@ $ModelName = [
 ]
 </code></pre>
 
-    <h4>1.2.3 Decimals</h4>
-<pre><code>
-'{propertyName}'	=> [
+        <h4>1.2.3 Decimals</h4>
+<pre><code>'{propertyName}'	=> [
     'type'  => 'd',
     'date'  => false,
     'required'  => {true/false},
@@ -145,30 +136,27 @@ $ModelName = [
     'scale' => {scale},
 ]
 </code></pre>
-<p>For decimals, specify <code>'d'</code> for <code>type</code> and indicate the required precision and scale that you need. Precision is the total number of digits, while scale is the number of digits right of the decimal point. For example, the decimal number 12345.67 has a precision of 7 digits, and a scale of 2 digits.</p>
+    <p>For decimals, specify <code>'d'</code> for <code>type</code> and indicate the required precision and scale that you need. Precision is the total number of digits, while scale is the number of digits right of the decimal point. For example, the decimal number 12345.67 has a precision of 7 digits, and a scale of 2 digits.</p>
 
-    <h4>1.2.4 Text</h4>
-<pre><code>
-'{propertyName}'	=> [
+        <h4>1.2.4 Text</h4>
+<pre><code>'{propertyName}'	=> [
     'type'	=> 't',
     'date'	=> false,
     'required'	=> {true/false},
 ]
 </code></pre>
-    
-    <h4>1.2.5 Dates</h4>
-<pre><code>
-'{propertyName}'	=> [
+        
+        <h4>1.2.5 Dates</h4>
+<pre><code>'{propertyName}'	=> [
     'type'	=> 'i',
     'date'	=> true,
     'required'	=> {true/false},
 ]
 </code></pre>
-<p>Dates use <code>'i'</code> for <code>type</code> as the date is stored as UNIX time in secods as a long integer.</p>
+    <p>Dates use <code>'i'</code> for <code>type</code> as the date is stored as UNIX time in secods as a long integer.</p>
 
-    <h4>1.2.6 Foreign Keys</h4>
-<pre><code>
-'{propertyName}'	=> [
+        <h4>1.2.6 Foreign Keys</h4>
+<pre><code>'{propertyName}'	=> [
     'type'	=> 'i',
     'date'	=> false,
     'size'	=> 11,
@@ -181,9 +169,8 @@ $ModelName = [
 ]
 </code></pre>
 
-<h4>1.2.7 Protected Flag</h4>
-<pre><code>
-'{propertyName}'	=> [
+    <h4>1.2.7 Protected Flag</h4>
+<pre><code>'{propertyName}'	=> [
     'type'	=> 's',
     'date'	=> false,
     'protected'	=> true,
@@ -191,11 +178,10 @@ $ModelName = [
     'size'	=> {size},
 ]
 </code></pre>
-<p>When a protected flag is present for a property, the value of that property is not returned by the controller unless the behaviour is customized with hooks or overrides. You may want to use this for properties that store sensitive information that should not be returned to the user, such as password hashes.</p>
+    <p>When a protected flag is present for a property, the value of that property is not returned by the controller unless the behaviour is customized with hooks or overrides. You may want to use this for properties that store sensitive information that should not be returned to the user, such as password hashes.</p>
 
-<h4>1.2.8 Encrypted Flag (beta)</h4>
-<pre><code>
-'{propertyName}'	=> [
+    <h4>1.2.8 Encrypted Flag (beta)</h4>
+<pre><code>'{propertyName}'	=> [
     'type'	=> 's',
     'date'	=> false,
     'encrypted'	=> true,
@@ -203,40 +189,38 @@ $ModelName = [
     'size'	=> 255, // minimally recommended for storing cipher
 ]
 </code></pre>
-<p>The encrypted flag marks the property as needing encryption or decryption with AWS's KMS encryption services. When storing data, the property value will be encrypted using a KMS key specified in the configuration and the cipher stored in the dabatase. When retrieving the value, the cipher will be decrypted using AWS KMS and returned to the user.</p>
+    <p>The encrypted flag marks the property as needing encryption or decryption with AWS's KMS encryption services. When storing data, the property value will be encrypted using a KMS key specified in the configuration and the cipher stored in the dabatase. When retrieving the value, the cipher will be decrypted using AWS KMS and returned to the user.</p>
 
-<!-- 1.3 Controllers -->
-<h3>1.3 Controllers</h3>
-<p>As mentioned earlier, model definitions are sufficient for Kyte to function as a default controller called <code>ModelController</code> handles all requests. By default, the <code>ModelController</code> handles GET, POST, PUT, and DELETE calls for authenticated users.  However, the default controller behaviour at times may not be sufficient for your application and thus can be customized. There are two different ways to customize controller behaviour in Kyte: (1) using hooks, (2) defining a custom controller. For most use cases, the first option will provide plenty of flexibility. However, option 2 may be necessary when you require more complicated customizations or the use of virtual controllers (explained later in this documentation).</p>
-<p>Let's start by exploring the default behaviour.</p>
+    <!-- 1.3 Controllers -->
+    <h3>1.3 Controllers</h3>
+    <p>As mentioned earlier, model definitions are sufficient for Kyte to function as a default controller called <code>ModelController</code> handles all requests. By default, the <code>ModelController</code> handles GET, POST, PUT, and DELETE calls for authenticated users.  However, the default controller behaviour at times may not be sufficient for your application and thus can be customized. There are two different ways to customize controller behaviour in Kyte: (1) using hooks, (2) defining a custom controller. For most use cases, the first option will provide plenty of flexibility. However, option 2 may be necessary when you require more complicated customizations or the use of virtual controllers (explained later in this documentation).</p>
+    <p>Let's start by exploring the default behaviour.</p>
 
-<h4>1.3.1 Default Behaviour</h4>
-<p>The default controller behaviour requires users to be authenticated and have the necessary permissions (we'll discuss how to communicate with your API and create sessions later). When a request is made to a Kyte endpoint, the request is first validated (more details later). Next, the request type (GET, POST, PUT, DELETE) and any associated parameters and body data are parsed before handing off to the controller. The controller will then make the appropriate transaction and return the results back to the user. For GET, POST, and PUT requests, a successful return will include the model data (excepted for protected properties). For DELETE requests, an empty array is returned upon successful deletion of the specified object.</p>
-<p>The prototype ModelController class that is used as the default controller, but also inherrited when customizing has the following class methods for handling requests:</p>
-<pre><code>
-public function new($data)
+    <h4>1.3.1 Default Behaviour</h4>
+    <p>The default controller behaviour requires users to be authenticated and have the necessary permissions (we'll discuss how to communicate with your API and create sessions later). When a request is made to a Kyte endpoint, the request is first validated (more details later). Next, the request type (GET, POST, PUT, DELETE) and any associated parameters and body data are parsed before handing off to the controller. The controller will then make the appropriate transaction and return the results back to the user. For GET, POST, and PUT requests, a successful return will include the model data (excepted for protected properties). For DELETE requests, an empty array is returned upon successful deletion of the specified object.</p>
+    <p>The prototype ModelController class that is used as the default controller, but also inherrited when customizing has the following class methods for handling requests:</p>
+<pre><code>public function new($data)
 public function update($field, $value, $data)
 public function get($field, $value)
 public function delete($field, $value)
 </code></pre>
 
-<p><b>POST Request</b></p>
-<p>POST requests are handled by <code>public function new($data)</code>, where the <code>$data</code> is the HTTP request body that is parsed and passed as an associative array. Upon successful completion, the newly created object is returned.</p>
+    <p><b>POST Request</b></p>
+    <p>POST requests are handled by <code>public function new($data)</code>, where the <code>$data</code> is the HTTP request body that is parsed and passed as an associative array. Upon successful completion, the newly created object is returned.</p>
 
-<p><b>PUT Request</b></p>
-<p>PUT requests are handled by <code>public function update($field, $value, $data)</code>, where the <code>$field</code> and <code>$value</code> are specified in the URL, and <code>$data</code> is the HTTP request body that is parsed and passed as an associative array. Upon successful completion, the updated model is returned.</p>
+    <p><b>PUT Request</b></p>
+    <p>PUT requests are handled by <code>public function update($field, $value, $data)</code>, where the <code>$field</code> and <code>$value</code> are specified in the URL, and <code>$data</code> is the HTTP request body that is parsed and passed as an associative array. Upon successful completion, the updated model is returned.</p>
 
-<p><b>GET Request</b></p>
-<p>GET requests are handled by <code>public function get($field, $value)</code>, where the <code>$field</code> and <code>$value</code> are specified in the URL. Only for GET requests, both <code>$field</code> and <code>$value</code> can be set to null, which will result in all non-deleted model data being returned.</p>
+    <p><b>GET Request</b></p>
+    <p>GET requests are handled by <code>public function get($field, $value)</code>, where the <code>$field</code> and <code>$value</code> are specified in the URL. Only for GET requests, both <code>$field</code> and <code>$value</code> can be set to null, which will result in all non-deleted model data being returned.</p>
 
-<p><b>DELETE Request</b></p>
-<p>DELETE requests are handled by <code>public function delete($field, $value)</code>, where the <code>$field</code> and <code>$value</code> are specified in the URL. Upon successful deletion, an empty array is returned.</p>
+    <p><b>DELETE Request</b></p>
+    <p>DELETE requests are handled by <code>public function delete($field, $value)</code>, where the <code>$field</code> and <code>$value</code> are specified in the URL. Upon successful deletion, an empty array is returned.</p>
 
-<h4>1.3.2 Controller Customization (using hooks)</h4>
-<p>The recommended method for customizing controller behaviour is using hooks in an inherrited class. Hooks are preferred as they reduce code length, increase readability and code management.  However, there are limits to the degree of customization possible with hooks, and as such you may need to define a custom controller for more advanced behaviours.</p>
-<p>The first step to using hooks is to inherit the <code>ModelController</code> class as shown below:</p>
-<pre><code>
-&lt;?php
+    <h4>1.3.2 Controller Customization (using hooks)</h4>
+    <p>The recommended method for customizing controller behaviour is using hooks in an inherrited class. Hooks are preferred as they reduce code length, increase readability and code management.  However, there are limits to the degree of customization possible with hooks, and as such you may need to define a custom controller for more advanced behaviours.</p>
+    <p>The first step to using hooks is to inherit the <code>ModelController</code> class as shown below:</p>
+<pre><code>&lt;?php
 
 // /app/controllers/{MyModelName}Controller.php
 class {MyModelName}Controller extends \Kyte\Mvc\Controller\ModelController
@@ -247,11 +231,10 @@ class {MyModelName}Controller extends \Kyte\Mvc\Controller\ModelController
 ?&gt;
 </code></pre>
 
-<p>It is very important to name your controller using the nomenclature shown in the example: <code>{MyModelName}Controller</code>. Both the file and class name need to have the name of the model for which you are creating a custom controller for appended with the word 'Controller'. If the controller name does not contain the model name, then Kyte will interpret it as a virtual controller (more described later in documentation). Once a custom controller class is created inherriting <code>ModelController</code>, then you are ready to start defining hooks to modify its behaviour.</p>
-<p>There are currently five different hooks that can be defined to modify different phases of the controller behaviour.</p>
+    <p>It is very important to name your controller using the nomenclature shown in the example: <code>{MyModelName}Controller</code>. Both the file and class name need to have the name of the model for which you are creating a custom controller for appended with the word 'Controller'. If the controller name does not contain the model name, then Kyte will interpret it as a virtual controller (more described later in documentation). Once a custom controller class is created inherriting <code>ModelController</code>, then you are ready to start defining hooks to modify its behaviour.</p>
+    <p>There are currently five different hooks that can be defined to modify different phases of the controller behaviour.</p>
 
-<pre><code>
-public function hook_init()
+<pre><code>public function hook_init()
 public function hook_auth()
 public function hook_prequery($method, &$field, &$value, &$conditions, &$all, &$order)
 public function hook_preprocess($method, &$r, &$o = null)
@@ -259,12 +242,11 @@ public function hook_response_data($method, $o, &$r = null, &$d = null)
 public function hook_process_get_response(&$r)
 </code></pre>
 
-<p>Let's start with the first two: <code>hook_init()</code> and <code>hook_auth()</code>.</p>
+    <p>Let's start with the first two: <code>hook_init()</code> and <code>hook_auth()</code>.</p>
 
-<h4>1.3.3 Custom Controllers</h4>
-<p>When more advanced customizations are required for handling requests for amodel, then overriding the public functions used to handle requests is required. The steps to creating a custom controller that overrides the public functions is the same as when creating custom controllers with hooks. The first step is to inherit the <code>ModelController</code>and naming both the class and file with the model name and the word 'Controller' appended as shown below:</p></p>
-<pre><code>
-&lt;?php
+    <h4>1.3.3 Custom Controllers</h4>
+    <p>When more advanced customizations are required for handling requests for amodel, then overriding the public functions used to handle requests is required. The steps to creating a custom controller that overrides the public functions is the same as when creating custom controllers with hooks. The first step is to inherit the <code>ModelController</code>and naming both the class and file with the model name and the word 'Controller' appended as shown below:</p></p>
+<pre><code>&lt;?php
 
 // /app/controllers/{MyModelName}Controller.php
 class {MyModelName}Controller extends \Kyte\Mvc\Controller\ModelController
@@ -275,11 +257,10 @@ class {MyModelName}Controller extends \Kyte\Mvc\Controller\ModelController
 ?&gt;
 </code></pre>
 
-<p>The functions that were introduced in the Default Behaviour section above can be overridden. We'll go through each one and explain how data can be returned back to the core API for the user to retrieve.</p>
+    <p>The functions that were introduced in the Default Behaviour section above can be overridden. We'll go through each one and explain how data can be returned back to the core API for the user to retrieve.</p>
 
-    <b>POST Request</b>
-<pre><code>
-public function new($data) {
+        <b>POST Request</b>
+<pre><code>public function new($data) {
     // initialize an empty array to store response data
     $response = [];
 
@@ -289,11 +270,10 @@ public function new($data) {
     $this->response['data'] = $response;
 }
 </code></pre>
-    <p>The function does not return any value but rather sets a reference variable that has been passed to the controller by the core API class during instantiation.  This allows for further customization, if necessary, where the response values can be manipulated from the controller class.</p>
+        <p>The function does not return any value but rather sets a reference variable that has been passed to the controller by the core API class during instantiation.  This allows for further customization, if necessary, where the response values can be manipulated from the controller class.</p>
 
-    <b>PUT Request</b>
-<pre><code>
-public function update($field, $value, $data) {
+        <b>PUT Request</b>
+<pre><code>public function update($field, $value, $data) {
     // initialize an empty array to store response data
     $response = [];
 
@@ -303,11 +283,10 @@ public function update($field, $value, $data) {
     $this->response['data'] = $response;
 }
 </code></pre>
-    <p>Just like in the above method for handling POST requests, the method for PUT requests also does not return any value but sets a referenced variable.</p>
+        <p>Just like in the above method for handling POST requests, the method for PUT requests also does not return any value but sets a referenced variable.</p>
 
-    <b>GET Request</b>
-<pre><code>
-public function get($field, $value) {
+        <b>GET Request</b>
+<pre><code>public function get($field, $value) {
     // initialize an empty array to store response data
     $response = [];
 
@@ -317,11 +296,10 @@ public function get($field, $value) {
     $this->response['data'] = $response;
 }
 </code></pre>
-    <p>The method for returning data for GET request is also the same.</p>
+        <p>The method for returning data for GET request is also the same.</p>
 
-    <b>DELETE Request</b>
-<pre><code>
-public function delete($field, $value) {
+        <b>DELETE Request</b>
+<pre><code>public function delete($field, $value) {
     // initialize an empty array to store response data
     $response = [];
 
@@ -331,16 +309,18 @@ public function delete($field, $value) {
     $this->response['data'] = $response;
 }
 </code></pre>
-    <p>The method for returning data for DELETE request is also the same, however, in the default controller, <code>$response</code> is never populated so an empty arrray is returned. This behaviour can be modified here as well if a certain response data was </p>
+        <p>The method for returning data for DELETE request is also the same, however, in the default controller, <code>$response</code> is never populated so an empty arrray is returned. This behaviour can be modified here as well if a certain response data was </p>
 
-<h4>1.3.4 Virtual Controllers</h4>
-<p>Virtual controllers are controllers that do not have a corresponding model (a one-to-one relationship with a model).  What this means is that you can create a virtual controller that handles incoming requests for data that do not have a model definition, or data that may require two or more models (although that latter can be defined using hooks - see above section on controller customization using hooks). The steps to defining a virtual controller is the same as creating a custom controller, except the controller and file name must not correspond to an existing model name.</p>
-<p>An example of when a virtual controller might be useful is when accepting payment transaction via Stripe. You could create a controller which accepts tokenized payment information to pass on to Stripe for payment processing while recording the transaction in your database (maybe an invoice model).</p>
-<p>Another example might be a controller for reseting a user's password. The controller may accept the user's email address as incoming data and create a one-time password reset link that is emailed to the user.</p>
-<p>As you can see, there are many different possibilies to use virtual controllers to fill in the gap created by traditional controllers and make more advanced customizations that meet your application requirements.</p>
+        <h4>1.3.4 Virtual Controllers</h4>
+        <p>Virtual controllers are controllers that do not have a corresponding model (a one-to-one relationship with a model).  What this means is that you can create a virtual controller that handles incoming requests for data that do not have a model definition, or data that may require two or more models (although that latter can be defined using hooks - see above section on controller customization using hooks). The steps to defining a virtual controller is the same as creating a custom controller, except the controller and file name must not correspond to an existing model name.</p>
+        <p>An example of when a virtual controller might be useful is when accepting payment transaction via Stripe. You could create a controller which accepts tokenized payment information to pass on to Stripe for payment processing while recording the transaction in your database (maybe an invoice model).</p>
+        <p>Another example might be a controller for reseting a user's password. The controller may accept the user's email address as incoming data and create a one-time password reset link that is emailed to the user.</p>
+        <p>As you can see, there are many different possibilies to use virtual controllers to fill in the gap created by traditional controllers and make more advanced customizations that meet your application requirements.</p>
 
-    <hr />
+        <hr />
     
-    <small>&copy; KeyQ, Inc.</small>
+        <small>&copy; KeyQ, Inc.</small>
+    </div>
+
 </body>
 </html>
