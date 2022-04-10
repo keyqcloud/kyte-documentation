@@ -65,7 +65,7 @@ $app->route();
         + /controllers/
 </code></pre>
 
-        <p>A <code>.gitignore</code> is highly recommended if you are using git for versioning. In the .gitignore, include <code>config.php</code> so that this is not tracked if accidentally committed and pushed.</p>
+        <p>A <code>.gitignore</code> is highly recommended if you are using git for versioning. In the <code>.gitignore</code> file, include <code>config.php</code> so that this is not tracked if accidentally committed and pushed.</p>
 
         <!-- 1.2 Creating a model -->
         <h3>1.2 Creating a model</h3>
@@ -106,7 +106,7 @@ $Device = [
     ],
 ];
 </code></pre>
-        <p>The <code>struct</code> element holds the property definitions, like the ones we saw earlier in the <code>Device</code> model example. Let's next take a look at the different property types that can be defined in Kyte.</p>
+        <p>The <code>name</code> element holds the name of the model, which must be the same as the variable name and filename. The <code>struct</code> element holds the property definitions, like the ones we saw earlier in the <code>Device</code> model example. Let's next take a look at the different property types that can be defined in Kyte.</p>
 
         <h4>1.2.1 Integers</h4>
 <pre><code>'{propertyName}'	=> [
