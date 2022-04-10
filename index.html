@@ -193,12 +193,12 @@ $Device = [
 
     <!-- 1.3 Controllers -->
     <h3>1.3 Controllers</h3>
-    <p>As mentioned earlier, model definitions are sufficient for Kyte to function as a default controller called <code>ModelController</code> handles all requests. By default, the <code>ModelController</code> handles GET, POST, PUT, and DELETE calls for authenticated users.  However, the default controller behaviour at times may not be sufficient for your application and thus can be customized. There are two different ways to customize controller behaviour in Kyte: (1) using hooks, (2) defining a custom controller. For most use cases, the first option will provide plenty of flexibility. However, option 2 may be necessary when you require more complicated customizations or the use of virtual controllers (explained later in this documentation).</p>
+    <p>As mentioned earlier, model definitions are sufficient for Kyte to function as a default controller called <code>ModelController</code> handles all requests. By default, the <code>ModelController</code> handles GET, POST, PUT, and DELETE calls for authenticated users.  However, the default controller behaviour at times may not be sufficient for your application and thus can be customized. There are two different ways to customize controller behaviour in Kyte: (1) using hooks, (2) defining a custom controller. For most use cases, the first option will provide plenty of flexibility. However, option 2 may be necessary when you require more complicated customizations or the use of virtual controllers is needed (explained later in this documentation).</p>
     <p>Let's start by exploring the default behaviour.</p>
 
     <h4>1.3.1 Default Behaviour</h4>
     <p>The default controller behaviour requires users to be authenticated and have the necessary permissions (we'll discuss how to communicate with your API and create sessions later). When a request is made to a Kyte endpoint, the request is first validated (more details later). Next, the request type (GET, POST, PUT, DELETE) and any associated parameters and body data are parsed before handing off to the controller. The controller will then make the appropriate transaction and return the results back to the user. For GET, POST, and PUT requests, a successful return will include the model data (excepted for protected properties). For DELETE requests, an empty array is returned upon successful deletion of the specified object.</p>
-    <p>The prototype ModelController class that is used as the default controller, but also inherrited when customizing has the following class methods for handling requests:</p>
+    <p>The prototype <code>ModelController</code> class that is used as the default controller, but also inherrited when customizing, has the following class methods for handling requests:</p>
 <pre><code>public function new($data)
 public function update($field, $value, $data)
 public function get($field, $value)
@@ -206,16 +206,16 @@ public function delete($field, $value)
 </code></pre>
 
     <p><b>POST Request</b></p>
-    <p>POST requests are handled by <code>public function new($data)</code>, where the <code>$data</code> is the HTTP request body that is parsed and passed as an associative array. Upon successful completion, the newly created object is returned.</p>
+    <p>POST requests are handled by <code>public function new($data)</code>, where the <code>$data</code> is the HTTP request body that is parsed and passed as an associative array. Upon successful completion, the newly created object is returned to the user via a referenced variable.</p>
 
     <p><b>PUT Request</b></p>
-    <p>PUT requests are handled by <code>public function update($field, $value, $data)</code>, where the <code>$field</code> and <code>$value</code> are specified in the URL, and <code>$data</code> is the HTTP request body that is parsed and passed as an associative array. Upon successful completion, the updated model is returned.</p>
+    <p>PUT requests are handled by <code>public function update($field, $value, $data)</code>, where the <code>$field</code> and <code>$value</code> are specified in the URL, and <code>$data</code> is the HTTP request body that is parsed and passed as an associative array. Upon successful completion, the updated model is returned to the user via a referenced variable.</p>
 
     <p><b>GET Request</b></p>
-    <p>GET requests are handled by <code>public function get($field, $value)</code>, where the <code>$field</code> and <code>$value</code> are specified in the URL. Only for GET requests, both <code>$field</code> and <code>$value</code> can be set to null, which will result in all non-deleted model data being returned.</p>
+    <p>GET requests are handled by <code>public function get($field, $value)</code>, where the <code>$field</code> and <code>$value</code> are specified in the URL. Only for GET requests, both <code>$field</code> and <code>$value</code> can be set to null, which will result in all non-deleted model data being returned to the user via a referenced variable.</p>
 
     <p><b>DELETE Request</b></p>
-    <p>DELETE requests are handled by <code>public function delete($field, $value)</code>, where the <code>$field</code> and <code>$value</code> are specified in the URL. Upon successful deletion, an empty array is returned.</p>
+    <p>DELETE requests are handled by <code>public function delete($field, $value)</code>, where the <code>$field</code> and <code>$value</code> are specified in the URL. Upon successful deletion, an empty array is returned to the user via a referenced variable.</p>
 
     <h4>1.3.2 Controller Customization (using hooks)</h4>
     <p>The recommended method for customizing controller behaviour is using hooks in an inherrited class. Hooks are preferred as they reduce code length, increase readability and code management.  However, there are limits to the degree of customization possible with hooks, and as such you may need to define a custom controller for more advanced behaviours.</p>
