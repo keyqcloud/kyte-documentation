@@ -245,7 +245,7 @@ public function hook_process_get_response(&$r)
     <p>Let's start with the first two: <code>hook_init()</code> and <code>hook_auth()</code>.</p>
 
     <h4>1.3.3 Custom Controllers</h4>
-    <p>When more advanced customizations are required for handling requests for amodel, then overriding the public functions used to handle requests is required. The steps to creating a custom controller that overrides the public functions is the same as when creating custom controllers with hooks. The first step is to inherit the <code>ModelController</code>and naming both the class and file with the model name and the word 'Controller' appended as shown below:</p></p>
+    <p>When more advanced customizations are required for handling requests for a model, then overriding the public functions used to handle requests is required. The steps to creating a custom controller that overrides the public functions is the same as when creating custom controllers with hooks. The first step is to inherit the <code>ModelController</code> and naming both the class and file with the model name and the word 'Controller' appended as shown below:</p></p>
 <pre><code>&lt;?php
 
 // /app/controllers/{MyModelName}Controller.php
@@ -309,13 +309,13 @@ class {MyModelName}Controller extends \Kyte\Mvc\Controller\ModelController
     $this->response['data'] = $response;
 }
 </code></pre>
-        <p>The method for returning data for DELETE request is also the same, however, in the default controller, <code>$response</code> is never populated so an empty arrray is returned. This behaviour can be modified here as well if a certain response data was </p>
+        <p>The method for returning data for DELETE request is also the same, however, in the default controller, <code>$response</code> is never populated so an empty arrray is returned. This behaviour can be modified here as well if a certain response data is required.</p>
 
         <h4>1.3.4 Virtual Controllers</h4>
         <p>Virtual controllers are controllers that do not have a corresponding model (a one-to-one relationship with a model).  What this means is that you can create a virtual controller that handles incoming requests for data that do not have a model definition, or data that may require two or more models (although that latter can be defined using hooks - see above section on controller customization using hooks). The steps to defining a virtual controller is the same as creating a custom controller, except the controller and file name must not correspond to an existing model name.</p>
         <p>An example of when a virtual controller might be useful is when accepting payment transaction via Stripe. You could create a controller which accepts tokenized payment information to pass on to Stripe for payment processing while recording the transaction in your database (maybe an invoice model).</p>
         <p>Another example might be a controller for reseting a user's password. The controller may accept the user's email address as incoming data and create a one-time password reset link that is emailed to the user.</p>
-        <p>As you can see, there are many different possibilies to use virtual controllers to fill in the gap created by traditional controllers and make more advanced customizations that meet your application requirements.</p>
+        <p>As you can see, there are many different possibilies to use virtual controllers to fill in the gaps created by traditional controllers and make more advanced customizations that meet your application requirements.</p>
 
         <hr />
     
