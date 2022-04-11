@@ -244,6 +244,26 @@ public function hook_process_get_response(&$r)
 
     <p>Let's start with the first two: <code>hook_init()</code> and <code>hook_auth()</code>.</p>
 
+    <p>As the name suggests, <code>hook_init()</code> is executed after class instantiation prior to any requests being handled. This is where you can change class settings, such as modifying protected variables, turning off authentication and permissions checks.  Below is a list of protected and public variables that can be modified:</p>
+
+<pre><code>public $dateformat;
+public $model;
+
+// controller behaviour flags
+protected $cascadeDelete;
+protected $getFKTables;
+protected $getExternalTables;
+protected $requireAuth;
+protected $requireRoles;
+protected $requireAccount;
+protected $failOnNull;
+protected $allowableActions;
+protected $checkExisting;
+
+// array with error messages
+protected $exceptionMessages;
+</code></pre>
+
     <h4>1.3.3 Custom Controllers</h4>
     <p>When more advanced customizations are required for handling requests for a model, then overriding the public functions used to handle requests is required. The steps to creating a custom controller that overrides the public functions is the same as when creating custom controllers with hooks. The first step is to inherit the <code>ModelController</code> and naming both the class and file with the model name and the word 'Controller' appended as shown below:</p></p>
 <pre><code>&lt;?php
